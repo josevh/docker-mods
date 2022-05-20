@@ -1,0 +1,46 @@
+#!/usr/bin/with-contenv python3
+
+import os
+import shutil
+import subprocess
+import sys
+
+CONTAINER_DATABASES_PATH = "/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases"
+BACKUP_PATH = "/db-backup"
+
+def main():
+    # check backup enabled
+    if os.getenv("PLEX_DB_BACKUP_ENABLED", "false") != "true":
+        print("plex-db-backup not enabled, skipping script")
+        return
+
+    # check backup path is not a file
+    if os.path.isfile(BACKUP_PATH):
+        raise Exception("BACKUP_PATH must be a directory, is a file")
+
+    # check backup path is a directory, is it mounted?
+    if not os.path.isdir(BACKUP_PATH):
+        raise Exception("BACKUP_PATH is not mounted, does not exist")
+
+    # ensure backup path permissions
+    shutil.chown(BACKUP_PATH, user="abc", group="abc")
+
+    # check if there's anything to backup, container first-run?
+    if not os.path.isdir(CONTAINER_DATABASES_PATH):
+        print("Nothing to backup")
+        return
+
+    # back up database directory to backup path
+    subprocess.call(["rsync", "-av", "--delete", "--omit-dir-times", CONTAINER_DATABASES_PATH, f"{BACKUP_PATH}/"])
+
+
+if __name__ == "__main__":
+    print("Applying plex-db-backup mod...")
+
+    try:
+        main()
+    except Exception as e:
+        print(f"ERROR in plex-db-backup: {str(e)}")
+
+    print("Applied plex-db-backup mod")
+    sys.exit(0)

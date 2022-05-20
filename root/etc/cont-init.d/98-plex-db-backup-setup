@@ -1,0 +1,25 @@
+#!/usr/bin/with-contenv bash
+
+MOD_ENABLED=${PLEX_DB_BACKUP_ENABLED:-false}
+
+if [ "$MOD_ENABLED" != "true" ]; then
+    echo "plex-db-backup mod not enabled, skipping script"
+    exit 0
+fi
+
+# Determine if setup is needed
+if [ -f /usr/bin/apt ]; then
+  ## Ubuntu
+  apt-get -qq update
+  apt-get -qq install --no-install-recommends -y \
+    python3 \
+    python3-pip \
+    rsync
+fi
+if [ -f /sbin/apk ]; then
+  # Alpine
+  apk add --no-cache \
+    py3-pip \
+    python3 \
+    rsync
+fi
