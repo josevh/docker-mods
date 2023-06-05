@@ -6,6 +6,6 @@ The environment variable names are a combination of `'TRANSMISSION_'` and the
 setting name capitalized with `'-'` converted to `'_'`. For example, the setting
 `'peer-port'` can be set with environment variable `TRANSMISSION_PEER_PORT`.
 
-In trasmission docker arguments, set an environment variable `DOCKER_MODS=ghcr.io/josevh/docker-mods:transmission-env-var-settings`.
+In transmission docker arguments, set an environment variable `DOCKER_MODS=ghcr.io/josevh/docker-mods:transmission-env-var-settings`.
 
 If adding multiple mods, enter them in an array separated by `|`, such as `DOCKER_MODS=ghcr.io/josevh/docker-mods:transmission-env-var-settings|linuxserver/mods:universal-wait-for-internet`
